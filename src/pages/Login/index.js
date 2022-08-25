@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation } from '@apollo/client';
 
-import { LOGIN } from './../../service/mutations';
+import { LOGIN } from 'service/mutations';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,13 +27,10 @@ export default function Login() {
   };
 
   const [passwordValue, setPasswordValue] = useState('');
-  const [login, { loading: loadingLogin }] = useMutation(LOGIN);
-
-  const [ hasError, setHasError ] = useState(false);
+  const [login, { loading: loadingLogin, error: loginError }] = useMutation(LOGIN);
 
   function submitLoginForm(e) {
     e.preventDefault();
-    setHasError(false);
     login({
       variables: {
         input: {
@@ -43,14 +40,14 @@ export default function Login() {
       }
     })
     .then(({ data }) => console.log(data.login.jwt))
-    .catch(_ => setHasError(true));
+    .catch(console.dir);
   }
 
   return (
     <Box maxW='lg' borderWidth='1px' borderRadius='lg' margin="0 auto" p={6}>
       <Text textAlign={'center'} fontSize={"4xl"}>Login form</Text>
 
-      {hasError && <Text textAlign={'center'} color='red.400' fontWeight='bold'>Invalid credentials</Text>}
+      {loginError && <Text textAlign={'center'} color='red.400' fontWeight='bold'>Invalid credentials</Text>}
 
       <form onSubmit={submitLoginForm}>
         <FormControl mb={5} isInvalid={emailInputValidationMessage.length > 0}>
