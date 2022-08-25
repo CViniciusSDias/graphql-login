@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
 import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
   Box,
   Text,
-  InputGroup,
-  InputRightElement,
   Button,
   CircularProgress,
 } from '@chakra-ui/react';
 import { useMutation } from '@apollo/client';
 
 import { LOGIN } from 'service/mutations';
+import FormControl from 'components/FormControl';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,29 +45,22 @@ export default function Login() {
       {loginError && <Text textAlign={'center'} color='red.400' fontWeight='bold'>Invalid credentials</Text>}
 
       <form onSubmit={submitLoginForm}>
-        <FormControl mb={5} isInvalid={emailInputValidationMessage.length > 0}>
-          <FormLabel>Email address</FormLabel>
-          <Input type='email' value={emailValue} onChange={e => handleEmailChange(e.target)} required={true} />
-          <FormErrorMessage textAlign={'left'}>{emailInputValidationMessage}</FormErrorMessage>
-        </FormControl>
+        <FormControl type="email"
+                     value={emailValue}
+                     onChange={e => handleEmailChange(e.target)}
+                     isInvalid={emailInputValidationMessage.length > 0}
+                     validationMessage={emailInputValidationMessage}
+                     label="Email address" />
 
-        <FormControl mb={5}>
-          <FormLabel>Password</FormLabel>
-          <InputGroup size='md'>
-            <Input
-              pr='4.5rem'
-              type={showPassword ? 'text' : 'password'}
-              placeholder='Enter password'
-              value={passwordValue} onChange={e => setPasswordValue(e.target.value)}
-              required={true}
-            />
-            <InputRightElement width='4.5rem'>
-              <Button h='1.75rem' size='sm' onClick={handleClick}>
-                {showPassword ? 'Hide' : 'Show'}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-        </FormControl>
+        <FormControl type="password"
+                     value={passwordValue}
+                     onChange={e => setPasswordValue(e.target.value)}
+                     label="Password"
+                     icon={
+                      <Button h='1.75rem' size='sm' onClick={handleClick}>
+                        {showPassword ? 'Hide' : 'Show'}
+                      </Button>
+                     } />
 
         <Button colorScheme='teal' type='submit' disabled={loadingLogin}>
           {loadingLogin ? <CircularProgress isIndeterminate color='grey' size='30px' /> : 'Login'}
