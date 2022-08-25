@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation } from '@apollo/client';
 
-import { LOGIN } from '../service/mutations';
+import { LOGIN } from './../../service/mutations';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
