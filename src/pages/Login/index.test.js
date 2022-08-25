@@ -1,11 +1,12 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
-import { render } from './../../test-utils';
+import { render } from 'common/config/test-utils';
 
 import Login from './';
 import { ApolloProvider } from '@apollo/client';
-import client from './../../service';
+import client from 'common/service';
+import { LoginProvider } from 'common/context/login';
 
 describe('<Login />', () => {
   let user;
@@ -16,7 +17,9 @@ describe('<Login />', () => {
   beforeEach(() => {
     render(
       <ApolloProvider client={client}>
-        <Login />
+        <LoginProvider>
+          <Login />
+        </LoginProvider>
       </ApolloProvider>
     );
     user = userEvent.setup()

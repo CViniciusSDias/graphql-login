@@ -1,6 +1,6 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
-import client from 'service';
+import client from 'common/service';
 import { ColorModeSwitcher } from 'components/ColorModeSwitcher';
 import { Box } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';

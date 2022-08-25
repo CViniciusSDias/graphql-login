@@ -1,69 +1,43 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
   Button,
   CircularProgress,
 } from '@chakra-ui/react';
-import { useMutation } from '@apollo/client';
 
-import { LOGIN } from 'service/mutations';
+import useLoginContext from 'common/context/login';
 import FormControl from 'components/FormControl';
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClick = () => setShowPassword(!showPassword);
-
-  const [emailValue, setEmailValue] = useState('');
-  const [emailInputValidationMessage, setEmailInputValidationMessage] = useState('');
-  const handleEmailChange = input => {
-    setEmailValue(input.value);
-    setEmailInputValidationMessage(input.validationMessage);
-  };
-
-  const [passwordValue, setPasswordValue] = useState('');
-  const [login, { loading: loadingLogin, error: loginError }] = useMutation(LOGIN);
-
-  function submitLoginForm(e) {
-    e.preventDefault();
-    login({
-      variables: {
-        input: {
-          identifier: emailValue,
-          password: passwordValue
-        }
-      }
-    })
-    .then(({ data }) => console.log(data.login.jwt))
-    .catch(console.dir);
-  }
+  const context = useLoginContext();
 
   return (
     <Box maxW='lg' borderWidth='1px' borderRadius='lg' margin="0 auto" p={6}>
       <Text textAlign={'center'} fontSize={"4xl"}>Login form</Text>
 
-      {loginError && <Text textAlign={'center'} color='red.400' fontWeight='bold'>Invalid credentials</Text>}
+      {context.loginError && <Text textAlign={'center'} color='red.400' fontWeight='bold'>Invalid credentials</Text>}
 
-      <form onSubmit={submitLoginForm}>
+      <form onSubmit={context.submitLoginForm}>
         <FormControl type="email"
-                     value={emailValue}
-                     onChange={e => handleEmailChange(e.target)}
-                     isInvalid={emailInputValidationMessage.length > 0}
-                     validationMessage={emailInputValidationMessage}
+                     value={context.email}
+                     onChange={context.handleEmailChange}
+                     isInvalid={context.emailValidationMessage.length > 0}
+                     validationMessage={context.emailValidationMessage}
                      label="Email address" />
 
-        <FormControl type="password"
-                     value={passwordValue}
-                     onChange={e => setPasswordValue(e.target.value)}
+        <FormControl type={context.showPassword ? "text" : "password"}
+                     value={context.password}
+                     onChange={context.handlePasswordChange}
                      label="Password"
                      icon={
-                      <Button h='1.75rem' size='sm' onClick={handleClick}>
-                        {showPassword ? 'Hide' : 'Show'}
+                      <Button h='1.75rem' size='sm' onClick={context.handleShowPassword}>
+                        {context.showPassword ? 'Hide' : 'Show'}
                       </Button>
                      } />
 
-        <Button colorScheme='teal' type='submit' disabled={loadingLogin}>
-          {loadingLogin ? <CircularProgress isIndeterminate color='grey' size='30px' /> : 'Login'}
+        <Button colorScheme='teal' type='submit' disabled={context.loadingLogin}>
+          {context.loadingLogin ? <CircularProgress isIndeterminate color='grey' size='30px' /> : 'Login'}
         </Button>
       </form>
     </Box>
