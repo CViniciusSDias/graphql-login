@@ -1,6 +1,8 @@
-import React from 'react';
 import { createContext, useCallback, useContext, useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+
 import { LOGIN } from 'common/service/mutations';
 
 const LoginContext = createContext(null);
@@ -41,13 +43,17 @@ const useLoginContext = () => {
     setPassword
   } = useContext(LoginContext);
   const [login, { loading: loadingLogin, error: loginError }] = useMutation(LOGIN);
+  const navigate = useNavigate();
+  const [, setCookie] = useCookies(['token']);
 
   function handleShowPassword() {
     setShowPassword(showPassword => !showPassword);
   }
 
+
   function submitLoginForm(e) {
     e.preventDefault();
+
     login({
       variables: {
         input: {
@@ -56,8 +62,10 @@ const useLoginContext = () => {
         }
       }
     })
-    .then(({ data }) => console.log(data.login.jwt))
-    .catch(_ => {});
+    .then(({ data }) => data.login.jwt)
+    .then(jwt => setCookie('token', jwt, { secure: true }))
+    .then(_ => navigate('/user'))
+    .catch(console.error);
   }
 
   const handleEmailChange = useCallback((event) => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormControl as ChakraFormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react';
 
 import DefaultInput from './DefaultInput';
