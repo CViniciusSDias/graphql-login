@@ -25,7 +25,7 @@ export default function IconInput({
         onChange={onChange}
         required={required}
       />
-      <PositionElement width='4.5rem'>
+      <PositionElement me={4}>
         {icon}
       </PositionElement>
     </InputGroup>

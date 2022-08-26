@@ -1,6 +1,7 @@
 import React, { StrictMode } from 'react';
 import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react';
 import * as ReactDOM from 'react-dom/client';
+import 'common/i18n';
 
 import Router from "./routes";
 

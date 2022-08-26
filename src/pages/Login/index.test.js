@@ -1,13 +1,14 @@
 import React from 'react';
-import { queryByRole, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import { render } from 'common/config/test-utils';
+import { ApolloProvider } from '@apollo/client';
+import { MemoryRouter } from 'react-router-dom';
 
 import Login from './';
-import { ApolloProvider } from '@apollo/client';
 import createApolloClient from 'common/service';
 import { LoginProvider } from 'common/context/login';
-import { MemoryRouter } from 'react-router-dom';
+
 
 describe('<Login />', () => {
   let user;
@@ -54,5 +55,15 @@ describe('<Login />', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'), { timeout: 5000 })
     const errorMessageElement = screen.getByText('Invalid credentials');
     expect(errorMessageElement).toBeInTheDocument();
+  });
+
+  it('successfully logs in', async () => {
+    await user.type(emailInput, 'test@freshcells.de');
+    await user.type(passwordInput, 'KTKwXm2grV4wHzW');
+    await user.click(loginButton);
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'), { timeout: 5000 })
+    const errorMessageElement = screen.queryByText('Invalid credentials');
+    expect(errorMessageElement).toBeNull();
   });
 });
