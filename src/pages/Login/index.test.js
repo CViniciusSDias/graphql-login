@@ -2,15 +2,37 @@ import React from 'react';
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import { render } from 'common/config/test-utils';
-import { ApolloProvider } from '@apollo/client';
+import { MockedProvider } from "@apollo/client/testing";
 import { MemoryRouter } from 'react-router-dom';
 
 import Login from './';
-import createApolloClient from 'common/service';
 import { LoginProvider } from 'common/context/login';
-
+import { LOGIN } from 'common/service/mutations';
 
 describe('<Login />', () => {
+  const mocks = [
+    {
+      request: {
+        query: LOGIN,
+        variables: { input: { identifier: 'valid-email@example.com', password: 'any password' } }
+      },
+      error: new Error(),
+    },
+    {
+      request: {
+        query: LOGIN,
+        variables: { input: { identifier: 'correct-email@example.com', password: 'correct password' } }
+      },
+      result: {
+        data: {
+          login: {
+            jwt: "fake token"
+          }
+        }
+      }
+    },
+  ];
+
   let user;
   let emailInput;
   let passwordInput;
@@ -18,13 +40,13 @@ describe('<Login />', () => {
 
   beforeEach(() => {
     render(
-      <ApolloProvider client={createApolloClient()}>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter>
           <LoginProvider>
             <Login />
           </LoginProvider>
         </MemoryRouter>
-      </ApolloProvider>
+      </MockedProvider>
     );
     user = userEvent.setup()
     emailInput = screen.getByRole('textbox');
@@ -58,8 +80,8 @@ describe('<Login />', () => {
   });
 
   it('successfully logs in', async () => {
-    await user.type(emailInput, 'test@freshcells.de');
-    await user.type(passwordInput, 'KTKwXm2grV4wHzW');
+    await user.type(emailInput, 'correct-email@example.com');
+    await user.type(passwordInput, 'correct password');
     await user.click(loginButton);
 
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'), { timeout: 5000 })
