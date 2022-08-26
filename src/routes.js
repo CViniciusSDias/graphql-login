@@ -2,9 +2,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CookiesProvider } from 'react-cookie';
 
 import Login from "./pages/Login";
-import User from "./pages/User";
+import Account from "./pages/Account";
 import DefaultPage from "./components/DefaultPage";
 import { LoginProvider } from 'common/context/login';
+import { AccountProvider } from 'common/context/account';
 import ProtectedRoute from 'components/ProtectedRoute';
 
 export default function Router() {
@@ -18,9 +19,11 @@ export default function Router() {
                 <Login />
               </LoginProvider>
             } />
-            <Route path="user" element={
+            <Route path="account" element={
               <ProtectedRoute>
-                <User />
+                <AccountProvider>
+                  <Account />
+                </AccountProvider>
               </ProtectedRoute>
             } />
           </Route>

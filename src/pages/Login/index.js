@@ -1,5 +1,4 @@
 import {
-  Box,
   Text,
   Button,
   CircularProgress,
@@ -12,7 +11,7 @@ export default function Login() {
   const context = useLoginContext();
 
   return (
-    <Box maxW='lg' borderWidth='1px' borderRadius='lg' margin="0 auto" p={6}>
+    <>
       <Text textAlign={'center'} fontSize={"4xl"}>Login form</Text>
 
       {context.loginError && <Text textAlign={'center'} color='red.400' fontWeight='bold'>Invalid credentials</Text>}
@@ -39,6 +38,6 @@ export default function Login() {
           {context.loadingLogin ? <CircularProgress isIndeterminate color='grey' size='30px' /> : 'Login'}
         </Button>
       </form>
-    </Box>
+    </>
   );
 }

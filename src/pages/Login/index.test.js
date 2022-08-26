@@ -1,12 +1,13 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { queryByRole, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import { render } from 'common/config/test-utils';
 
 import Login from './';
 import { ApolloProvider } from '@apollo/client';
-import client from 'common/service';
+import createApolloClient from 'common/service';
 import { LoginProvider } from 'common/context/login';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('<Login />', () => {
   let user;
@@ -16,10 +17,12 @@ describe('<Login />', () => {
 
   beforeEach(() => {
     render(
-      <ApolloProvider client={client}>
-        <LoginProvider>
-          <Login />
-        </LoginProvider>
+      <ApolloProvider client={createApolloClient()}>
+        <MemoryRouter>
+          <LoginProvider>
+            <Login />
+          </LoginProvider>
+        </MemoryRouter>
       </ApolloProvider>
     );
     user = userEvent.setup()
@@ -48,9 +51,8 @@ describe('<Login />', () => {
     await user.type(passwordInput, 'any password');
     await user.click(loginButton);
 
-    await waitFor(() => {
-      const errorMessageElement = screen.getByText('Invalid credentials');
-      expect(errorMessageElement).toBeInTheDocument();
-    });
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'), { timeout: 5000 })
+    const errorMessageElement = screen.getByText('Invalid credentials');
+    expect(errorMessageElement).toBeInTheDocument();
   });
 });

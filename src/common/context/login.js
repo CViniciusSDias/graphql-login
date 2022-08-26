@@ -44,12 +44,12 @@ const useLoginContext = () => {
   } = useContext(LoginContext);
   const [login, { loading: loadingLogin, error: loginError }] = useMutation(LOGIN);
   const navigate = useNavigate();
-  const [, setCookie] = useCookies(['token']);
+  const [, setCookie, deleteCookie] = useCookies(['token']);
+  deleteCookie('token');
 
   function handleShowPassword() {
     setShowPassword(showPassword => !showPassword);
   }
-
 
   function submitLoginForm(e) {
     e.preventDefault();
@@ -64,8 +64,8 @@ const useLoginContext = () => {
     })
     .then(({ data }) => data.login.jwt)
     .then(jwt => setCookie('token', jwt, { secure: true }))
-    .then(_ => navigate('/user'))
-    .catch(console.error);
+    .then(_ => navigate('/account'))
+    .catch(_ => {});
   }
 
   const handleEmailChange = useCallback((event) => {

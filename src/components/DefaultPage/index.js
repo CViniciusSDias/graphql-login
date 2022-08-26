@@ -1,18 +1,21 @@
 import { ApolloProvider } from '@apollo/client';
-import client from 'common/service';
-import { ColorModeSwitcher } from 'components/ColorModeSwitcher';
 import { Box } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+
+import createApolloClient from 'common/service';
+import { ColorModeSwitcher } from 'components/ColorModeSwitcher';
 
 export default function DefaultPage() {
+  const [ cookies ] = useCookies(['token']);
   return (
-    <>
-      <ColorModeSwitcher position='absolute' top={10} right={10} />
+    <Box maxW='lg' borderWidth='1px' borderRadius='lg' margin="1rem auto" p={6}>
+      <ColorModeSwitcher />
       <Box fontSize="xl" p={4}>
-        <ApolloProvider client={client}>
+        <ApolloProvider client={createApolloClient(cookies.token)}>
           <Outlet />
         </ApolloProvider>
       </Box>
-    </>
+    </Box>
   )
 }
